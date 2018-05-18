@@ -1,7 +1,7 @@
 # Books Management System
 基于QT和Mysql的图书管理程序，实现图书、用户及图书借阅的管理的基本功能。
 
-**实验平台**：QT Creator 4.5 (community)
+**实验平台**：QT5.10，mysql5.7
 
 **实验内容**：图书管理系统，提供图书、用户和借阅管理功能
 
