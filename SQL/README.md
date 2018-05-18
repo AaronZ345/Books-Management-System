@@ -38,7 +38,9 @@ borrower varchar(30),
 primary key(ISBN, borrower),
 foreign key(borrower) references users(username));
 ```
-1. 自行添加管理员账户与密码，直接对数据库中managers的表格进行操作即可。
+2. 自行添加管理员账户与密码，直接对数据库中managers的表格进行操作即可。
+
+3. 连接mysql与QT，请自行查阅。
 
 ---
 - **功能展示**：
