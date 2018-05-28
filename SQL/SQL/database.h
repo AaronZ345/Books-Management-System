@@ -1,12 +1,16 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
+
 #include <QObject>
 #include <QDialog>
 #include <QSqlDatabase>
 #include <QSqlQuery>
 #include <QVector>
 #include <QtSql>
+#include <QIcon>
+#include <QImageReader>
+#include <QMovie>
 #include <QWidget>
 #include <QTabWidget>
 #include <QPushButton>
@@ -18,6 +22,8 @@
 #include <QComboBox>
 #include <QPalette>
 #include <QDir>
+#include <QFileDialog>
+#include <QIODevice>
 #include <QList>
 #include <QCheckBox>
 #include <QTimer>
@@ -32,18 +38,12 @@
 #include <QCryptographicHash>
 #include <QDateTime>
 #include <algorithm>
-#include <QIcon>
-#include <QImageReader>
-#include <QMovie>
 #include <QFileDialog>
 #include <QCommandLinkButton>
 #include <QDesktopServices>
 #include <QToolButton>
 #include <QApplication>
 #include <QFont>
-#include<QFileDialog>
-#include<QDir>
-#include<QIODevice>
 
 using namespace std;
 
@@ -53,7 +53,7 @@ class Database : public QObject{
 
 public:
     Database(QObject *parent = 0);
-    ~Database();
+    virtual ~Database();
 
 private:
     enum {GRANT, RELEASE};
@@ -107,9 +107,9 @@ private:
     QLineEdit *regisNameText;
     QLineEdit *regisPassText;
     QLineEdit *regisRepeatPassText;
-    QLineEdit *loginUserNameText;
+    QLineEdit *loginAccountText;
     QLineEdit *loginUserPassText;
-    QLineEdit *loginManageNameText;
+    QLineEdit *loginManageAccountText;
     QLineEdit *loginManagePassText;
 
     //books information
