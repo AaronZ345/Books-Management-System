@@ -21,28 +21,29 @@ Database::Database(QObject *parent):
     ifCanDeleteUser(1){
     initMainWindow();
     connectDB();
+
     QSqlQuery query;
-    query.exec("select * from users;");
+    query.exec(msgManageUser);
     qDebug() << query.value(0).toString();
-    qDebug() << "var";
+    qDebug() << "start";
 }
 
 //destruct function
 Database::~Database(){
-    DB.removeDatabase("QMYSQL");
+    //DB.removeDatabase("QMYSQL");
 }
 
 //function of connecting to database
 bool Database::connectDB(){
     //informatioin of database to connect
-    DB = QSqlDatabase::addDatabase("QMYSQL");
+    DB = QSqlDatabase::addDatabase("input your database name here");
     DB.setHostName("localhost");
-    DB.setDatabaseName("input your database name");
-    DB.setUserName("input your user name");
-    DB.setPassword("input your password");
+    DB.setDatabaseName("input your database name here");
+    DB.setUserName("input your user name here");
+    DB.setPassword("input your passwd here");
 
     if(!DB.open()){
-        QMessageBox::critical(nullptr, tr("ERROR!"), DB.lastError().text());
+        QMessageBox::critical(nullptr, tr("ERROR WHEN CONNECT DATABASE!"), DB.lastError().text());
         return false;
     }
     return true;
@@ -60,11 +61,11 @@ void Database::initMainWindow(){
     showTime->setAlignment(Qt::AlignCenter);
 
     //set the background of top firld
-    QPalette pal;
-    pal.setBrush(QPalette::Background, QBrush(QPixmap("./title.JPG")));
+    QPalette background;
+    background.setBrush(QPalette::Background, QBrush(QPixmap("./title.JPG")));
     titleImage = new QWidget();
     titleImage->setAutoFillBackground(true);
-    titleImage->setPalette(pal);
+    titleImage->setPalette(background);
     titleImage->setMinimumHeight(200);
 
     //set the time with the operating system
@@ -78,14 +79,14 @@ void Database::initMainWindow(){
     setMainTabWidget(TOURIST);
 
     //set the information of top field
-    QPalette pa;
-    pa.setColor(QPalette::WindowText, Qt::gray);
+    QPalette backText;
+    backText.setColor(QPalette::WindowText, Qt::gray);
     QLabel *title = new QLabel("Books Manage System ");
     QLabel *message = new QLabel("Made By Aaron ");
     title->setAlignment(Qt::AlignLeft);
-    title->setPalette(pa);
+    title->setPalette(backText);
     message->setAlignment(Qt::AlignRight);
-    message->setPalette(pa);
+    message->setPalette(backText);
 
     horizontalLayout = new QHBoxLayout();
     horizontalLayout->addStretch();
@@ -160,8 +161,8 @@ void Database::setMainTabWidget(int type){
         connect(quitButton, SIGNAL(clicked(bool)), this, SLOT(quitRegister()));
 
         if(type == MANAGER){
-            userType->setText("Manager : " + loginManageNameText->text());
-            userType->setFixedSize(200 + loginManageNameText->text().length(), 40);
+            userType->setText("Manager : " + loginManageAccountText->text());
+            userType->setFixedSize(200 + loginManageAccountText->text().length(), 40);
 
             ManageUserWidget = new QWidget();
             manageBookWidget = new QWidget();
@@ -177,8 +178,8 @@ void Database::setMainTabWidget(int type){
         else if(type == USER || type == NEWUSER){
             if(type == USER)
             {
-                userType->setText("User : " + loginUserNameText->text());
-                userType->setFixedSize(200 + loginUserNameText->text().length(), 40);
+                userType->setText("User : " + loginAccountText->text());
+                userType->setFixedSize(200 + loginAccountText->text().length(), 40);
             }
             else if(type == NEWUSER)
             {
@@ -215,25 +216,25 @@ void Database::quitRegister(){
 //set About interface
 void Database::setAboutWidget(){
     //four buttons to go to four tyes of library
-    QCommandLinkButton *linkToZJU = new QCommandLinkButton("Go To ZJU Library");
+    QCommandLinkButton *linkToZJU = new QCommandLinkButton("ZJU Library");
     linkToZJU->setDescription("Click this button and you can go to the ZJU Libry's websit");
     linkToZJU->setFixedSize(260, 100);
     linkToZJU->setFlat(true);
     linkToZJU->setIcon(QIcon("./images/arrowRight.png"));
 
-    QCommandLinkButton *linkToHZ = new QCommandLinkButton("Go To Hangzhou Library");
+    QCommandLinkButton *linkToHZ = new QCommandLinkButton("Hangzhou Library");
     linkToHZ->setDescription("Click this button and you can go to the Hangzhou Libry's websit");
     linkToHZ->setFixedSize(260, 100);
     linkToHZ->setFlat(true);
     linkToHZ->setIcon(QIcon("./images/arrowRight.png"));
 
-    QCommandLinkButton *linkToZJ = new QCommandLinkButton("Go To Zhejiang Library");
+    QCommandLinkButton *linkToZJ = new QCommandLinkButton("Zhejiang Library");
     linkToZJ->setDescription("Click this button and you can go to the Zhejiang Libry's websit");
     linkToZJ->setFixedSize(260, 100);
     linkToZJ->setFlat(true);
     linkToZJ->setIcon(QIcon("./images/arrowRight.png"));
 
-    QCommandLinkButton *linkToCN = new QCommandLinkButton("Go To China Library");
+    QCommandLinkButton *linkToCN = new QCommandLinkButton("China Library");
     linkToCN->setDescription("Click this button and you can go to the China Libry's websit");
     linkToCN->setFixedSize(260, 100);
     linkToCN->setFlat(true);
@@ -314,8 +315,8 @@ void Database::setLoginWindow(){
     QWidget *userLoginWindow = createLoginWindow(USER);
     QWidget *managerLoginWindow = createLoginWindow(MANAGER);
 
-    loginWindow->addTab(userLoginWindow, tr("User Login"));
-    loginWindow->addTab(managerLoginWindow, tr("Manager Login"));
+    loginWindow->addTab(userLoginWindow, tr("As User"));
+    loginWindow->addTab(managerLoginWindow, tr("As Manager"));
 
     loginWindow->setWindowFlags(loginWindow->windowFlags() & ~Qt::WindowCloseButtonHint); //can not use the x when login
     mainWindow->setWindowFlags(mainWindow->windowFlags() & ~Qt::WindowCloseButtonHint);
@@ -330,7 +331,7 @@ void Database::setLoginWindow(){
 QWidget *Database::createLoginWindow(int type){
     //information for all types users
     QWidget *loginDifferTab = new QWidget();
-    QLabel *loginName = new QLabel(tr("Name"));
+    QLabel *loginName = new QLabel(tr("Account"));
     QLabel *loginPass = new QLabel(tr("Password"));
     QPushButton *submitButton = new QPushButton(tr("Login"));
     QPushButton *cancelButton = new QPushButton(tr("Cancel"));
@@ -350,19 +351,19 @@ QWidget *Database::createLoginWindow(int type){
     horizontalLayoutLogin->addStretch();
 
     if(type == USER){
-        loginUserNameText = new QLineEdit();
+        loginAccountText = new QLineEdit();
         loginUserPassText = new QLineEdit();
         loginUserPassText->setEchoMode(QLineEdit::Password);
 
-        gridLayoutLogin->addWidget(loginUserNameText, 1, 2);
+        gridLayoutLogin->addWidget(loginAccountText, 1, 2);
         gridLayoutLogin->addWidget(loginUserPassText, 2, 2);
     }
     else if(type == MANAGER){
-        loginManageNameText = new QLineEdit();
+        loginManageAccountText = new QLineEdit();
         loginManagePassText = new QLineEdit();
         loginManagePassText->setEchoMode(QLineEdit::Password);
 
-        gridLayoutLogin->addWidget(loginManageNameText, 1, 2);
+        gridLayoutLogin->addWidget(loginManageAccountText, 1, 2);
         gridLayoutLogin->addWidget(loginManagePassText, 2, 2);
     }
 
@@ -392,21 +393,21 @@ void Database::loginCancel(){
     mainWindow->setWindowFlags(mainWindow->windowFlags() & Qt::WindowCloseButtonHint);
     mainWindow->show();
 
-    delete loginUserNameText;
+    delete loginAccountText;
     delete loginUserPassText;
-    delete loginManageNameText;
+    delete loginManageAccountText;
     delete loginManagePassText;
-    loginUserNameText = nullptr;
+    loginAccountText = nullptr;
     loginUserPassText = nullptr;
-    loginManageNameText = nullptr;
+    loginManageAccountText = nullptr;
     loginManagePassText = nullptr;
 }
 
 //check the login information
 void Database::loginUser(){
     //check if all blank is filled
-    if(loginUserNameText->text().isEmpty()){
-        QMessageBox::warning(nullptr, tr("Incomplete Information!"), tr("Please input user name!"));
+    if(loginAccountText->text().isEmpty()){
+        QMessageBox::warning(nullptr, tr("Incomplete Information!"), tr("Please input account!"));
         return;
     }
     if(loginUserPassText->text().isEmpty()){
@@ -416,19 +417,17 @@ void Database::loginUser(){
 
     //check if the user exists
     QSqlQuery query;
-    query.exec("select * from users where username = \"" + loginUserNameText->text() + "\";");
+    query.exec("select * from users where username = \"" + loginAccountText->text() + "\";");
     if(!query.next()){
-        QMessageBox::warning(nullptr, tr("Login failed!"), tr("This user don't exist!"));
-        loginUserNameText->clear();
+        QMessageBox::warning(nullptr, tr("Login failed!"), tr("Account doesn't exist!"));
+        loginAccountText->clear();
         loginUserPassText->clear();
-        return;
     }
     else{
         //check the password
         if(loginUserPassText->text() != query.value(1).toString()){
             QMessageBox::critical(nullptr, tr("Login failed!"), tr("Wrong Password!"));
             loginUserPassText->clear();
-            return;
         }
         else{
             //go to user interface
@@ -436,35 +435,35 @@ void Database::loginUser(){
             loginWindow->close();
             mainWindow->setWindowFlags(mainWindow->windowFlags() & Qt::WindowCloseButtonHint);
             mainWindow->show();
-            return;
         }
     }
+    return;
 }
 
 //check manager information
 void Database::loginManager(){
-    if(loginManageNameText->text().isEmpty()){
-        QMessageBox::warning(nullptr, tr("Incomplete Information!"), tr("Please input user name!"));
+    if(loginManageAccountText->text().isEmpty()){
+        QMessageBox::warning(nullptr, tr("Incomplete Information!"), tr("Please input account!"));
+        loginManagePassText->clear();
         return;
     }
     if(loginManagePassText->text().isEmpty()){
         QMessageBox::warning(nullptr, tr("Incomplete Information!"), tr("Please input password!"));
+        loginManagePassText->clear();
         return;
     }
 
     QSqlQuery query;
-    query.exec("select * from managers where managername = \"" + loginManageNameText->text() + "\";");
+    query.exec("select * from managers where managername = \"" + loginManageAccountText->text() + "\";");
     if(!query.next()){
         QMessageBox::warning(nullptr, tr("Login failed!"), tr("This manager don't exist!"));
-        loginManageNameText->clear();
+        loginManageAccountText->clear();
         loginManagePassText->clear();
-        return;
     }
     else{
         if(loginManagePassText->text() != query.value(1).toString()){
             QMessageBox::critical(nullptr, tr("Login failed!"), tr("Wrong Password!"));
             loginManagePassText->clear();
-            return;
         }
         else{
             //go to manager interface
@@ -472,9 +471,9 @@ void Database::loginManager(){
             loginWindow->close();
             mainWindow->setWindowFlags(mainWindow->windowFlags() & Qt::WindowCloseButtonHint);
             mainWindow->show();
-            return;
         }
     }
+    return;
 }
 
 //-------------------------------------------------------------------------------------------------------------
@@ -486,7 +485,7 @@ void Database::setRegisterWindow(){
     registerButton->setEnabled(false);
 
     registerWindow = new QWidget();
-    QLabel *userName = new QLabel(tr("Nickname"));
+    QLabel *userName = new QLabel(tr("Account"));
     QLabel *Password = new QLabel(tr("Password"));
     QLabel *repeatPassword = new QLabel(tr("Repeat Password"));
     QPushButton *submitButton = new QPushButton(tr("Submit"));
@@ -725,7 +724,8 @@ void Database::showBorrowableBooks(){
 
     //input at least one key information
     if(authorText->text().isEmpty() && bookNameText->text().isEmpty()
-       && publisherText->text().isEmpty() && ISBNText->text().isEmpty()){
+       && publisherText->text().isEmpty() && ISBNText->text().isEmpty()
+       && bookTypeText->currentText() == "" && publishDateText->currentText() == ""){
         QMessageBox::warning(nullptr, tr("Incomplete Information!"), tr("Please choose key information"));
         return;
     }
@@ -754,10 +754,16 @@ void Database::showBorrowableBooks(){
         constraint += "publisher like \"%" + publisherText->text() + "%\"";
     }
     if(bookTypeText->currentText() != ""){
-        constraint += " and booktype = \"" + bookTypeText->currentText() + "\"";
+        if(constraint != ""){
+            constraint += " and ";
+        }
+        constraint += "booktype = \"" + bookTypeText->currentText() + "\"";
     }
     if(publishDateText->currentText() != ""){
-        constraint += " and publishdate = " + publishDateText->currentText();
+        if(constraint != ""){
+            constraint += " and ";
+        }
+        constraint += "publishdate = \"" + publishDateText->currentText() + "\"";
     }
 
     int row = 0;
@@ -838,7 +844,6 @@ void Database::BorrowBook(){
 
     if(borrowBookNum + borrowedBookTable->rowCount() > 3){ //at most 3 books
         QMessageBox::critical(nullptr, tr("Borrow Failed!"), tr("Note:you can only borrow no more than 3 books"));
-        return;
     }
     else{
         QSqlQuery update;
@@ -862,7 +867,7 @@ void Database::BorrowBook(){
                 updateBookInfor.exec(msg);
 
                 if(!updateBookInfor.isActive()){
-                    QMessageBox::critical(nullptr, tr("Borrow Failed!"), tr("can't updata"));
+                    QMessageBox::critical(nullptr, tr("Failed!"), tr("Update Failed"));
                     return;
                 }
             }
@@ -873,6 +878,7 @@ void Database::BorrowBook(){
         showBorrowableBooks();
         updateBorrowedBooks();
     }
+    return;
 }
 
 //function to check books which user wants
@@ -990,7 +996,7 @@ void Database::ReturnBook(){
     QMessageBox::information(nullptr, tr(""), tr("Return succeed"));
     updateBorrowedBooks();
     QString text = ISBNText->text();
-    ISBNText->setText("heihehi");
+    ISBNText->setText("");
     showBorrowableBooks();
     ISBNText->setText(text);
 }
@@ -1253,8 +1259,12 @@ void Database::grantOrRelease(bool type){
             query.exec(tr("update users set authority = %1 where username = \"").arg(authority) + username + "\";");
             if(!query.isActive()){
                 //fail to update
-                if(type == GRANT) QMessageBox::critical(nullptr, tr("Grant Users!"), tr("Failed to grant %1 !").arg(username));
-                else if(type == RELEASE) QMessageBox::critical(nullptr, tr("Release Authority!"), tr("Failed to release %1 !").arg(username));
+                if(type == GRANT){
+                    QMessageBox::critical(nullptr, tr("Grant Users!"), tr("Failed to grant %1 !").arg(username));
+                }
+                else if(type == RELEASE){
+                    QMessageBox::critical(nullptr, tr("Release Authority!"), tr("Failed to release %1 !").arg(username));
+                }
                 return;
             }
 
