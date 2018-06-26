@@ -36,11 +36,11 @@ Database::~Database(){
 //function of connecting to database
 bool Database::connectDB(){
     //informatioin of database to connect
-    DB = QSqlDatabase::addDatabase("QMYSQL");
+    DB = QSqlDatabase::addDatabase("input your database name");
     DB.setHostName("localhost");
-    DB.setDatabaseName("QMYSQL");
-    DB.setUserName("root");
-    DB.setPassword("zhangyu");
+    DB.setDatabaseName("input your daabase name");
+    DB.setUserName("input your user name");
+    DB.setPassword("input your passwd");
 
     if(!DB.open()){
         QMessageBox::critical(nullptr, tr("ERROR WHEN CONNECT DATABASE!"), DB.lastError().text());
